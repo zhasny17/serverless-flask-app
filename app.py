@@ -36,14 +36,12 @@ def get_user(user_id):
     item = resp.get('Item')
     if not item:
         return jsonify({'error': 'User does not exist'}), 404
-    return jsonify({
-        'userId': item.get('userId').get('S'),
-        'name': item.get('name').get('S')
-    })
+
+    return jsonify(item)
 
 
 
-@app.route("/users/getAll", methods=["GET"])
+@app.route("/user/getAll", methods=["GET"])
 def get_all_user():
     response = client.scan(
         TableName=USERS_TABLE,
@@ -65,32 +63,37 @@ def create_user():
         Item={
             'userId': {'S': user_id },
             'name': {'S': name }
-        }
+        },
     )
-    return jsonify({
-        'userId': user_id,
-        'name': name
-    })
+    print ('----',resp)
+    item = request.json
+    return jsonify(item)
+
 
 @app.route("/user/edit/<string:user_id>", methods=["PUT"])
-def edit_user():
-    user_id = request.json.get('userId')
+def edit_user(user_id):
+
+    user_idAux = request.json.get('userId')
     name = request.json.get('name')
+
     if not user_id or not name:
         return jsonify({'error': 'Please provide userId and name'}), 400
 
-    resp = client.put_item(
+    resp = client.update_item(
         TableName=USERS_TABLE,
-        Item={
-            'userId': {'S': user_id },
-            'name': {'S': name }
+        Key={
+            'userId': {'S':user_id}
         },
-        ExpressionAttributeValues={'userId': {'S': user_id }}
+        AttributeUpdates={
+            'name': {
+                'Value': {'S': name}
+            }
+        },
+        ReturnValues="ALL_NEW"
     )
-    return jsonify({
-        'userId': user_id,
-        'name': name
-    })
+    print ('------', resp)
+    item = resp.get('Attributes')
+    return jsonify(item)
 
 
 
