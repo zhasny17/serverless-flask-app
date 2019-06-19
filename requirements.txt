@@ -1,0 +1,4 @@
+awslogs==0.11.0
+boto3==1.9.171
+botocore==1.12.171
+Flask==1.0.3
