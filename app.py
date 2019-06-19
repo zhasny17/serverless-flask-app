@@ -65,7 +65,7 @@ def create_user():
             'name': {'S': name }
         },
     )
-    print ('----',resp)
+ 
     item = request.json
     return jsonify(item)
 
@@ -76,8 +76,8 @@ def edit_user(user_id):
     user_idAux = request.json.get('userId')
     name = request.json.get('name')
 
-    if not user_id or not name:
-        return jsonify({'error': 'Please provide userId and name'}), 400
+    if not user_id or not name or user_id != user_idAux:
+        return jsonify({'error': 'Please provide userId in your URL just like the object you are passing and name'}), 400
 
     resp = client.update_item(
         TableName=USERS_TABLE,
@@ -91,7 +91,7 @@ def edit_user(user_id):
         },
         ReturnValues="ALL_NEW"
     )
-    print ('------', resp)
+
     item = resp.get('Attributes')
     return jsonify(item)
 

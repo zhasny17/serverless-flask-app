@@ -146,7 +146,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/teste-serverless/test/1560968564382-2019-06-19T18:22:44.382Z/teste-serverless.zip"
+                "S3Key": "serverless/teste-serverless/test/1560977282751-2019-06-19T20:48:02.751Z/teste-serverless.zip"
               },
               "FunctionName": "teste-serverless-test-app",
               "Handler": "wsgi_handler.handler",
@@ -170,14 +170,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "AppLambdaVersion6NvdUgI7w52H6nucY1MJx06gQsA5CUAP41f5sAo3f1E": {
+          "AppLambdaVersionpXt87U50OYsic9Gt0RE5Lglkdp5eWBGvyGzsbbfPNn4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AppLambdaFunction"
               },
-              "CodeSha256": "JBLSDo275QnC3W0CyLZFL4CNBONYwQRzkhI5WR6rWBQ="
+              "CodeSha256": "zOnky6vaZdNg8sbXYL9bBpHSJfrUdHwiY1vibr4I5R4="
             }
           },
           "ApiGatewayRestApi": {
@@ -295,7 +295,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1560968547790": {
+          "ApiGatewayDeployment1560977266467": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -377,7 +377,7 @@
           "AppLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppLambdaVersion6NvdUgI7w52H6nucY1MJx06gQsA5CUAP41f5sAo3f1E"
+              "Ref": "AppLambdaVersionpXt87U50OYsic9Gt0RE5Lglkdp5eWBGvyGzsbbfPNn4"
             }
           },
           "ServiceEndpoint": {
@@ -509,7 +509,7 @@
     "artifact": "/home/fortal-desktop2/developer/serverless-flask-app/.serverless/teste-serverless.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/teste-serverless/test/1560968564382-2019-06-19T18:22:44.382Z",
+    "artifactDirectoryName": "serverless/teste-serverless/test/1560977282751-2019-06-19T20:48:02.751Z",
     "artifact": "teste-serverless.zip"
   }
 }
