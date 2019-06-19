@@ -1,4 +1,4 @@
-#!/home/fortal-desktop2/developer/serverless-flask-app/env/bin/python3.6
+#!/home/fortal-desktop2/.pyenv/versions/3.6.0/bin/python3.6
 # -*- coding: utf8 -*-
 # :Copyright: © 2015 Günter Milde.
 # :License: Released under the terms of the `2-Clause BSD license`_, in short:

@@ -1,4 +1,4 @@
-#!/home/fortal-desktop2/developer/serverless-flask-app/env/bin/python3.6
+#!/home/fortal-desktop2/.pyenv/versions/3.6.0/bin/python3.6
 
 # $Id: rst2xetex.py 7847 2015-03-17 17:30:47Z milde $
 # Author: Guenter Milde

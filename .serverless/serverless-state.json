@@ -5,7 +5,7 @@
       "name": "teste-serverless"
     },
     "provider": {
-      "stage": "dev",
+      "stage": "test",
       "region": "sa-east-1",
       "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*]+?)}",
       "name": "aws",
@@ -32,7 +32,7 @@
         }
       ],
       "environment": {
-        "USERS_TABLE": "teste-table-dev"
+        "USERS_TABLE": "teste-table-test"
       },
       "versionFunctions": true,
       "remoteFunctionData": null,
@@ -57,7 +57,7 @@
           "AppLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/teste-serverless-dev-app"
+              "LogGroupName": "/aws/lambda/teste-serverless-test-app"
             }
           },
           "IamRoleLambdaExecution": {
@@ -85,7 +85,7 @@
                     "Fn::Join": [
                       "-",
                       [
-                        "dev",
+                        "test",
                         "teste-serverless",
                         "lambda"
                       ]
@@ -101,7 +101,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/teste-serverless-dev*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/teste-serverless-test*:*"
                           }
                         ]
                       },
@@ -112,7 +112,7 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/teste-serverless-dev*:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/teste-serverless-test*:*:*"
                           }
                         ]
                       },
@@ -129,7 +129,7 @@
                   "-",
                   [
                     "teste-serverless",
-                    "dev",
+                    "test",
                     {
                       "Ref": "AWS::Region"
                     },
@@ -146,9 +146,9 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/teste-serverless/dev/1560949646025-2019-06-19T13:07:26.025Z/teste-serverless.zip"
+                "S3Key": "serverless/teste-serverless/test/1560968564382-2019-06-19T18:22:44.382Z/teste-serverless.zip"
               },
-              "FunctionName": "teste-serverless-dev-app",
+              "FunctionName": "teste-serverless-test-app",
               "Handler": "wsgi_handler.handler",
               "MemorySize": 1024,
               "Role": {
@@ -161,7 +161,7 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "USERS_TABLE": "teste-table-dev"
+                  "USERS_TABLE": "teste-table-test"
                 }
               }
             },
@@ -170,20 +170,20 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "AppLambdaVersionJx2utasoSSm3D4ljIIbubt4HboIHgKqFQ2twX1I": {
+          "AppLambdaVersion6NvdUgI7w52H6nucY1MJx06gQsA5CUAP41f5sAo3f1E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AppLambdaFunction"
               },
-              "CodeSha256": "x8uoZ1t+dXSbjQJrLoNSogiSRM1EKW94Ui7VDSUZ3Qw="
+              "CodeSha256": "JBLSDo275QnC3W0CyLZFL4CNBONYwQRzkhI5WR6rWBQ="
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "dev-teste-serverless",
+              "Name": "test-teste-serverless",
               "EndpointConfiguration": {
                 "Types": [
                   "EDGE"
@@ -295,13 +295,13 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1560949636410": {
+          "ApiGatewayDeployment1560968547790": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               },
-              "StageName": "dev"
+              "StageName": "test"
             },
             "DependsOn": [
               "ApiGatewayMethodAny",
@@ -364,7 +364,7 @@
                 "ReadCapacityUnits": 1,
                 "WriteCapacityUnits": 1
               },
-              "TableName": "teste-table-dev"
+              "TableName": "teste-table-test"
             }
           }
         },
@@ -377,7 +377,7 @@
           "AppLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppLambdaVersionJx2utasoSSm3D4ljIIbubt4HboIHgKqFQ2twX1I"
+              "Ref": "AppLambdaVersion6NvdUgI7w52H6nucY1MJx06gQsA5CUAP41f5sAo3f1E"
             }
           },
           "ServiceEndpoint": {
@@ -398,7 +398,7 @@
                   {
                     "Ref": "AWS::URLSuffix"
                   },
-                  "/dev"
+                  "/test"
                 ]
               ]
             }
@@ -435,18 +435,27 @@
       "vpc": {}
     },
     "custom": {
-      "tableName": "teste-table-dev",
+      "tableName": "teste-table-test",
       "wsgi": {
         "app": "app.app",
         "packRequirements": false
       },
       "pythonRequirements": {
         "dockerizePip": "non-linux"
+      },
+      "dynamodb": {
+        "stages": [
+          "test"
+        ],
+        "start": {
+          "migrate": true
+        }
       }
     },
     "plugins": [
       "serverless-python-requirements",
-      "serverless-wsgi"
+      "serverless-wsgi",
+      "serverless-dynamodb-local"
     ],
     "pluginsData": {},
     "functions": {
@@ -460,7 +469,7 @@
             "http": "ANY {proxy+}"
           }
         ],
-        "name": "teste-serverless-dev-app",
+        "name": "teste-serverless-test-app",
         "package": {},
         "memory": 1024,
         "timeout": 6,
@@ -489,7 +498,7 @@
               "ReadCapacityUnits": 1,
               "WriteCapacityUnits": 1
             },
-            "TableName": "teste-table-dev"
+            "TableName": "teste-table-test"
           }
         }
       },
@@ -500,7 +509,7 @@
     "artifact": "/home/fortal-desktop2/developer/serverless-flask-app/.serverless/teste-serverless.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/teste-serverless/dev/1560949646025-2019-06-19T13:07:26.025Z",
+    "artifactDirectoryName": "serverless/teste-serverless/test/1560968564382-2019-06-19T18:22:44.382Z",
     "artifact": "teste-serverless.zip"
   }
 }
