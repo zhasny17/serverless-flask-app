@@ -1,6 +1,10 @@
 import os
 import boto3
 import json
+import multiprocessing
+
+import time
+from multiprocessing.pool import ThreadPool
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
@@ -8,21 +12,50 @@ app = Flask(__name__)
 USERS_TABLE = os.environ['USERS_TABLE']
 IS_OFFLINE = os.environ.get('IS_OFFLINE')
 
-if IS_OFFLINE:
+pool = ThreadPool(processes=1)
 
+if IS_OFFLINE:
     client = boto3.client(
         'dynamodb',
         region_name='localhost',
         endpoint_url='http://localhost:8000'
     )
-
 else:
     client = boto3.client('dynamodb',region_name='sa-east-1')
 
+def createUser(obj, return_dict):
+    try:
+        print (obj)
+        resp = client.put_item(
+            TableName=USERS_TABLE,
+            Item={
+                'userId': {'S': obj.get('userId') },
+                'name': {'S': obj.get('name') }
+            },
+        )
+        return_dict[obj] = obj
+        time.sleep(3)
+    except:
+        return  'Internal error'
 
-@app.route("/")
-def hello():
-    return "Hello, sucessful test with a web application using flask and serverless!!"
+@app.route("/user/create", methods=["POST"])
+def create_user():
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    jobs = []
+    obj = request.json
+
+    p = multiprocessing.Process(target=createUser(obj,return_dict))
+    jobs.append(p)
+    p.start()
+    for i in jobs:
+        i.join()
+    return jsonify(return_dict.values()), 200
+
+
+@app.route('/')
+def index():
+    return 'testing...'
 
 
 @app.route("/user/get/<string:user_id>", methods=["GET"])
@@ -49,25 +82,6 @@ def get_all_user():
     itens = response.get('Items')
     return jsonify(itens)
     
-
-
-@app.route("/user/create", methods=["POST"])
-def create_user():
-    user_id = request.json.get('userId')
-    name = request.json.get('name')
-    if not user_id or not name:
-        return jsonify({'error': 'Please provide userId and name'}), 400
-
-    resp = client.put_item(
-        TableName=USERS_TABLE,
-        Item={
-            'userId': {'S': user_id },
-            'name': {'S': name }
-        },
-    )
- 
-    item = request.json
-    return jsonify(item)
 
 
 @app.route("/user/edit/<string:user_id>", methods=["PUT"])
