@@ -2,12 +2,11 @@ import os
 import boto3
 import json
 import multiprocessing
-
 import time
 from multiprocessing.pool import ThreadPool
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='web/static', template_folder='web/templates')
 
 USERS_TABLE = os.environ['USERS_TABLE']
 IS_OFFLINE = os.environ.get('IS_OFFLINE')
@@ -25,7 +24,7 @@ else:
 
 def createUser(obj, return_dict):
     try:
-        print (obj)
+        time.sleep(3)
         resp = client.put_item(
             TableName=USERS_TABLE,
             Item={
@@ -33,29 +32,29 @@ def createUser(obj, return_dict):
                 'name': {'S': obj.get('name') }
             },
         )
-        return_dict[obj] = obj
-        time.sleep(3)
+        return_dict['objeto'] = obj
+        print ('----Objeto adicionado----', return_dict['objeto'] )
+        
     except:
-        return  'Internal error'
+        return_dict['Error'] = 'Internal error'
 
 @app.route("/user/create", methods=["POST"])
 def create_user():
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
-    jobs = []
+    requestsQueue = []
     obj = request.json
-
-    p = multiprocessing.Process(target=createUser(obj,return_dict))
-    jobs.append(p)
-    p.start()
-    for i in jobs:
-        i.join()
-    return jsonify(return_dict.values()), 200
+    process = multiprocessing.Process(target=createUser(obj,return_dict))
+    requestsQueue.append(process)
+    process.start()
+    for requester in requestsQueue:
+        requester.join()
+    return jsonify(return_dict._getvalue()), 200
 
 
 @app.route('/')
 def index():
-    return 'testing...'
+    return render_template('index.html')
 
 
 @app.route("/user/get/<string:user_id>", methods=["GET"])
@@ -105,7 +104,6 @@ def edit_user(user_id):
         },
         ReturnValues="ALL_NEW"
     )
-
     item = resp.get('Attributes')
     return jsonify(item)
 
@@ -119,4 +117,5 @@ def delete_user(user_id):
             'userId': {'S': user_id }
         }
     )
-    return jsonify({'message':'User with id '+user_id+' was deleted!'}),200
+    return jsonify({'Message':'User with id '+user_id+' was deleted!'}),200
+
