@@ -3,15 +3,15 @@ import boto3
 import json
 import multiprocessing
 import time
+import hashlib
 from multiprocessing.pool import ThreadPool
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__,static_folder='web/static', template_folder='web/templates')
 
 USERS_TABLE = os.environ['USERS_TABLE']
-IS_OFFLINE = os.environ.get('IS_OFFLINE')
 
-pool = ThreadPool(processes=1)
+IS_OFFLINE = os.environ.get('IS_OFFLINE')
 
 if IS_OFFLINE:
     client = boto3.client(
@@ -54,6 +54,10 @@ def create_user():
 
 @app.route('/')
 def index():
+    a = 'lucas'
+    h = hashlib.md5()
+    h.update(a.encode())
+    print (h.hexdigest())
     return render_template('index.html')
 
 
