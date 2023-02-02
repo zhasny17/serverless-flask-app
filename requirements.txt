@@ -13,7 +13,7 @@ s3transfer==0.2.1
 six==1.12.0
 termcolor==1.1.0
 urllib3==1.25.3
-Werkzeug==0.15.4
+Werkzeug==0.15.5
 Click==7.0
 docutils==0.14
 itsdangerous==1.1.0
